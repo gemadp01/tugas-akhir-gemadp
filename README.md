@@ -5,10 +5,18 @@ Sebuah aplikasi web yang memudahkan pelanggan mencari cafe sekaligus membantu pe
 
 ## Features
 
-- 
-- Custom invoice format → A single brand can have multiple invoice formats (e.g., services, sales, etc.)
-- Generate PDF → Invoices can be downloaded in PDF format
-- Send Email → Invoices can be sent to the customer's email address
+- Cafe Search  
+    - Users can search for cafes by name or location.
+
+- Cafe Details  
+Displays detailed information about the cafe, including:  
+    - Table availability (number of available/occupied tables)  
+    - Product list (available food and drink menu)
+
+- Cafe Management  
+Admins or cafe owners can manage:  
+    - Table availability (update table status: available/occupied)  
+    - Products/menu (add, edit, delete products)
 
 
 ## Built with
@@ -17,8 +25,6 @@ Sebuah aplikasi web yang memudahkan pelanggan mencari cafe sekaligus membantu pe
 - ExpressJS 
 - React
 - NodeJS
-
-
 
 ## Run Locally
 
