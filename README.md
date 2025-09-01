@@ -26,6 +26,9 @@ Admins or cafe owners can manage:
 - React
 - NodeJS
 
+## Design Prototype
+[figma](https://www.figma.com/design/9xdtiurKDJnKsZB270lMcS/cafe-prototype?m=auto&t=Aoa55YHK1BmHFYV7-1)
+
 ## Run Locally
 
 Clone the project
@@ -34,6 +37,7 @@ Clone the project
   git clone https://github.com/gemadp01/tugas-akhir-gemadp.git
 ```
 
+### Configure Client:  
 Go to the project directory
 
 ```bash
@@ -46,13 +50,40 @@ Install dependencies
   npm install
 ```
 
-Start the server
+Start the client
 ```bash
   npm run dev
 ```
 
-Do the same in the server directory.
+### Configure Server:
+Go to the project directory
 
+```bash
+  cd server
+```
+
+copy .env from .env.example (for custom token)
+
+```bash
+  copy .env.example .env
+```
+
+set your costum token
+
+```bash
+  ACCESS_TOKEN_SECRET=[your-custom-token-here]
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+```bash
+  npm run dev
+```
 
 ## Authors
 
