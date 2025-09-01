@@ -1,15 +1,14 @@
 const Product = require("../models/Product.js");
+const fs = require("fs");
 
 // Create Product
 const createProduct = async (req, res) => {
-  // console.log(req.body);
-  // console.log(req.file);
-
   const {
     productName,
     productCategory,
     productPrice,
     productQuantity,
+    productImage,
     productStatus,
   } = req.body;
 
@@ -27,7 +26,8 @@ const createProduct = async (req, res) => {
       productCategory,
       productPrice,
       productQuantity,
-      // productImage: `/uploads/${req.file.filename}`,
+      // productImage: `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+      productImage: `${req.file.filename}`,
       productStatus,
       user: req.user.id,
     });
@@ -73,6 +73,9 @@ const getAllProductsByUserLoggedIn = async (req, res) => {
     const products = await Product.find({
       user: req.user.id,
     });
+    if (products.length === 0) {
+      return res.status(200).json(null);
+    }
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -82,8 +85,9 @@ const getAllProductsByUserLoggedIn = async (req, res) => {
 // Get Product By Id
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    res.json(product);
+    const products = await Product.find({ user: req.params.id });
+
+    res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -115,9 +119,26 @@ const updateProductById = async (req, res) => {
 
 // Delete Product By Id
 const deleteProductById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: "Product deleted!" });
+    const product = await Product.findById(id);
+    if (!product)
+      return res.status(404).json({ message: "Product tidak ditemukan" });
+
+    // jika ada file, hapus dari disk
+    if (product.productImage) {
+      const imagePath =
+        process.cwd() + "/public/uploads/" + product.productImage;
+
+      fs.unlink(imagePath, (err) => {
+        if (err) console.log("Gagal hapus file:", err);
+        else console.log("Berhasil hapus:", imagePath);
+      });
+    }
+
+    await product.deleteOne();
+    res.json({ message: "Product berhasil dihapus" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
