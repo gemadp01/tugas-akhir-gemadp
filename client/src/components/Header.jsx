@@ -19,7 +19,7 @@ function Header() {
         <nav className="text-sm text-textColor-1">
           {/* Menu list (Desktop) */}
           <ul className="hidden md:flex md:space-x-4 md:items-center md:justify-center">
-            <li className="">
+            <li>
               <NavLink to="/" end className={navLinkClass}>
                 Home
               </NavLink>

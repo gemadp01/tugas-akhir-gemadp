@@ -9,23 +9,31 @@ const CreateProductPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      productName: e.target.productName.value,
-      productCategory: e.target.productCategory.value,
-      productPrice: e.target.productPrice.value,
-      // productImage: e.target.productImage.files[0],
-      productQuantity: e.target.productQuantity.value,
-      productStatus: e.target.productStatus.value,
-    };
+    const formData = new FormData();
+    // const data = {
+    //   productName: e.target.productName.value,
+    //   productCategory: e.target.productCategory.value,
+    //   productPrice: e.target.productPrice.value,
+    //   productQuantity: e.target.productQuantity.value,
+    //   productStatus: e.target.productStatus.value,
+    // };
+
+    formData.append("productName", e.target.productName.value);
+    formData.append("productCategory", e.target.productCategory.value);
+    formData.append("productPrice", e.target.productPrice.value);
+    formData.append("productQuantity", e.target.productQuantity.value);
+    formData.append("productStatus", e.target.productStatus.value);
+    if (e.target.productImage.files.length > 0) {
+      formData.append("productImage", e.target.productImage.files[0]);
+    }
 
     try {
       const res = await fetch("http://localhost:3000/api/products/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
       if (!res.ok) {
@@ -34,7 +42,7 @@ const CreateProductPage = () => {
 
       alert("Data berhasil ditambahkan!");
       setTimeout(() => {
-        navigate("/admin/products");
+        navigate("/admin/products/user/loggedin");
       }, 2000);
     } catch (err) {
       alert("Terjadi error: " + err.message);
@@ -50,7 +58,7 @@ const CreateProductPage = () => {
         </h2>
         <form
           method="POST"
-          // encType="multipart/form-data"
+          encType="multipart/form-data"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -115,7 +123,7 @@ const CreateProductPage = () => {
               placeholder="Masukkan harga produk"
             />
           </div>
-          {/* <div className="mb-5">
+          <div className="mb-5">
             <label
               htmlFor="productImage"
               className="block text-gray-700 font-medium mb-2"
@@ -128,7 +136,7 @@ const CreateProductPage = () => {
               name="productImage"
               className="w-full px-4 py-3 border rounded-lg"
             />
-          </div> */}
+          </div>
 
           <div className="mb-5">
             <label

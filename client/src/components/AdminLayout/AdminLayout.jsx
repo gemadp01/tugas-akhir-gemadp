@@ -8,14 +8,20 @@ import {
 import Button from "../Button";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AdminPage } from "../guard/AdminPage";
-// import clsx from "clsx";
+import clsx from "clsx";
+
+const navLinkClass = ({ isActive }) =>
+  clsx(
+    "w-auto px-3 md:w-3/4 text-left flex justify-center md:justify-start items-center bg-bgColor-1 text-primary py-2 md:px-5 rounded hover:bg-bgColor-2 hover:text-secondary cursor-pointer",
+    isActive && "bg-bgColor-2 text-secondary rounded"
+  );
 
 const SidebarItem = (props) => {
-  const { children } = props;
+  const { path, children } = props;
   return (
-    <Button color="sidebarItem" size="md" className="w-3/4 text-left ">
+    <NavLink to={path} className={navLinkClass}>
       {children}
-    </Button>
+    </NavLink>
   );
 };
 
@@ -26,8 +32,7 @@ export const AdminLayout = (props) => {
   const handleLogout = async (e) => {
     e.preventDefault();
 
-    // Panggil backend untuk hapus cookie (kalau pakai cookie)
-    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    await fetch("/api/auth/logout", { method: "POST" });
 
     localStorage.removeItem("token");
 
@@ -39,9 +44,9 @@ export const AdminLayout = (props) => {
     <AdminPage>
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-80 shadow h-screen bg-sidebar">
+        <aside className="w-1/5 md:w-80 shadow h-screen bg-sidebar">
           <div className="h-16 flex-col flex items-center justify-center border-b border-textColor-1">
-            <h1 className="font-semibold text-3xl">Icon or Label</h1>
+            <h1 className="font-bold text-md md:text-3xl">Icon or Label</h1>
           </div>
 
           <div className="pl-4 pt-4">
@@ -49,33 +54,20 @@ export const AdminLayout = (props) => {
           </div>
 
           <div className="flex flex-col items-center space-y-4 py-4">
-            <NavLink
-              to="/admin/dashboard"
-              className="w-full flex items-center justify-center"
-            >
-              <SidebarItem>
-                <LayoutDashboardIcon className="inline h-4 w-4 mr-3" />
-                Dashboard
-              </SidebarItem>
-            </NavLink>
-            <NavLink
-              to="/admin/list-meja"
-              className="w-full flex items-center justify-center"
-            >
-              <SidebarItem>
-                <Table2Icon className="inline h-4 w-4 mr-3" />
-                Ketersediaan Meja
-              </SidebarItem>
-            </NavLink>
-            <NavLink
-              to="/admin/products"
-              className="w-full flex items-center justify-center"
-            >
-              <SidebarItem>
-                <UtensilsCrossedIcon className="inline h-4 w-4 mr-3" />
-                Products
-              </SidebarItem>
-            </NavLink>
+            <SidebarItem end path="/admin/dashboard">
+              <LayoutDashboardIcon className="inline h-4 w-4 md:mr-3" />
+              <span className="hidden md:block">Dashboard</span>
+            </SidebarItem>
+
+            <SidebarItem path={`/admin/list-meja/user/loggedin`}>
+              <Table2Icon className="inline h-4 w-4 md:mr-3" />
+              <span className="hidden md:block">Ketersediaan Meja</span>
+            </SidebarItem>
+
+            <SidebarItem path={`/admin/products/user/loggedin`}>
+              <UtensilsCrossedIcon className="inline h-4 w-4 md:mr-3" />
+              <span className="hidden md:block">Products</span>
+            </SidebarItem>
           </div>
 
           <div className="pl-4 pt-4">
@@ -84,10 +76,14 @@ export const AdminLayout = (props) => {
 
           <form method="POST" onSubmit={handleLogout}>
             <div className="flex flex-col items-center space-y-4 py-4">
-              <SidebarItem>
-                <LogOutIcon className="inline h-4 w-4 mr-3" />
-                Logout
-              </SidebarItem>
+              <Button
+                type="submit"
+                color="sidebarItem"
+                className="md:w-3/4 flex items-center"
+              >
+                <LogOutIcon className="inline h-4 w-4 md:mr-3" />
+                <span className="hidden md:block">Logout</span>
+              </Button>
             </div>
           </form>
         </aside>

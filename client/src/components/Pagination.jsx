@@ -1,42 +1,38 @@
 import { ChevronRightIcon } from "lucide-react";
+import { useState } from "react";
 
 function Pagination() {
-  return (
-    <div className="flex justify-center mt-10 space-x-2">
-      <a
-        href="#"
-        className="ring ring-primary bg-primary/20 px-2 py-1 sm:px-4 sm:py-2 ml-1 mt-2 text-gray-600 border rounded-lg focus:outline-none"
-      >
-        1
-      </a>
-      <a
-        href="#"
-        className="hover:bg-gray-100 px-2 py-1 sm:px-4 sm:py-2 ml-1 mt-2 text-gray-600 border rounded-lg focus:outline-none"
-      >
-        2
-      </a>
-      <a
-        href="#"
-        className="hover:bg-gray-100 px-2 py-1 sm:px-4 sm:py-2 ml-1 mt-2 text-gray-600 border rounded-lg focus:outline-none"
-      >
-        3
-      </a>
-      <span className="px-2 py-1 sm:px-4 sm:py-2 mt-2 text-gray-600 rounded-lg focus:outline-none">
-        ...
-      </span>
-      <a
-        href="#"
-        className="px-2 py-1 sm:px-4 sm:py-2 mt-2 text-gray-600 border rounded-lg hover:bg-gray-100 focus:outline-none"
-      >
-        21
-      </a>
+  const [currentPage, setCurrentPage] = useState(3);
 
-      <a
-        href="#"
-        className="px-2 py-1 sm:px-4 sm:py-2 mt-2 text-gray-600 border rounded-lg hover:bg-gray-100 focus:outline-none"
+  const pages = [1, 2, 3, 4];
+
+  return (
+    <div className="flex justify-center items-center space-x-2 mb-12">
+      <button
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
       >
-        <ChevronRightIcon className="w-5 h-5" />
-      </a>
+        Previous
+      </button>
+      {pages.map((page) => (
+        <button
+          key={page}
+          onClick={() => setCurrentPage(page)}
+          className={`px-4 py-2 text-sm rounded ${
+            currentPage === page
+              ? "bg-gray-600 text-white"
+              : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+      <button
+        onClick={() => setCurrentPage(Math.min(4, currentPage + 1))}
+        className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
+      >
+        Next
+      </button>
     </div>
   );
 }

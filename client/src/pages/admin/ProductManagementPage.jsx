@@ -6,22 +6,57 @@ import { useEffect, useState } from "react";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
+  const token = localStorage.getItem("token");
 
   const fetchingDataProducts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/products/user/login",
+        "http://localhost:3000/api/products/user/loggedin",
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const data = await response.json();
+      console.log(data);
       setProducts(data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+
+    const confirmDelete = confirm(
+      "Apakah Anda yakin ingin menghapus product ini?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const productId = e.target.productId.value;
+      const res = await fetch(
+        `http://localhost:3000/api/products/${productId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log(data);
+
+      if (res.ok) {
+        alert("Product berhasil dihapus!");
+        // update state supaya UI ikut berubah
+        setProducts((prev) => prev.filter((p) => p._id !== productId));
+      }
+    } catch (err) {
+      console.log("Error:", err);
     }
   };
 
@@ -118,11 +153,25 @@ const ProductManagementPage = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {/* Row 1 */}
-                  {products.map((product) => (
-                    <>
-                      <tr className="hover:bg-gray-50 transition-colors duration-150">
+                  {products !== null ? (
+                    products.map((product) => (
+                      <tr
+                        className="hover:bg-gray-50 transition-colors duration-150"
+                        key={product._id}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
+                            <div className="h-10 w-10 flex-shrink-0">
+                              <img
+                                className="h-10 w-10 rounded-full object-cover"
+                                src={
+                                  product.productImage
+                                    ? `http://localhost:3000/${product.productImage}`
+                                    : "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80"
+                                }
+                                alt="product"
+                              />
+                            </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
                                 {product.productName}
@@ -144,9 +193,15 @@ const ProductManagementPage = () => {
                           {product.productQuantity}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            {product.productStatus}
-                          </span>
+                          {product.productStatus === "available" ? (
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              {product.productStatus}
+                            </span>
+                          ) : (
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                              {product.productStatus}
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <a
@@ -155,16 +210,36 @@ const ProductManagementPage = () => {
                           >
                             Edit
                           </a>
-                          <a
-                            href="#"
-                            className="text-red-600 hover:text-red-900"
+                          <form
+                            method="POST"
+                            onSubmit={handleDelete}
+                            className="inline"
                           >
-                            Delete
-                          </a>
+                            <input
+                              type="hidden"
+                              name="productId"
+                              value={product._id}
+                            />
+                            <button
+                              type="submit"
+                              className="text-red-600 hover:text-red-900 cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </form>
                         </td>
                       </tr>
-                    </>
-                  ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
+                      >
+                        Tidak ada data products.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

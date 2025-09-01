@@ -2,17 +2,22 @@ import { useNavigate } from "react-router-dom";
 import { AdminLayout } from "../../components/AdminLayout/AdminLayout";
 import { Breadcrumb } from "../../components/Breadcrumb";
 import Button from "../../components/Button";
+import { useState } from "react";
+// import getUserIdFromToken from "../../utils/getUserIdFromToken";
 
 const CreateListMejaPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const data = {
       noMeja: e.target.noMeja.value,
-      status: e.target.status.value,
       waktuPemesanan: e.target.waktuPemesanan.value,
+      status: e.target.status.value,
       note: e.target.note.value,
     };
 
@@ -32,10 +37,12 @@ const CreateListMejaPage = () => {
 
       alert("Data berhasil ditambahkan!");
       setTimeout(() => {
-        navigate("/admin/list-meja");
+        navigate(`/admin/list-meja/user/loggedin`);
       }, 2000);
     } catch (err) {
       alert("Terjadi error: " + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,7 +115,7 @@ const CreateListMejaPage = () => {
           </div>
 
           <Button color="primary" size="lg" className="w-full">
-            Tambah data
+            {loading ? "Menyimpan..." : "Simpan"}
           </Button>
         </form>
       </div>

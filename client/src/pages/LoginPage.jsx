@@ -7,6 +7,9 @@ import { useState } from "react";
 const LoginPage = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => setShowPassword(!showPassword);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -69,13 +72,16 @@ const LoginPage = () => {
                 Password
                 <div className="relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     id="password"
                     className="block w-full border border-gray-300 px-4 py-3 text-primary text-sm rounded focus:ring-0 focus:border-teal-500 placeholder-gray-400"
                     placeholder="***********"
                   />
-                  <div className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-8 text-primary border-l border-gray-300">
+                  <div
+                    onClick={togglePassword}
+                    className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-8 text-primary border-l border-gray-300"
+                  >
                     <EyeIcon className="w-5 h-5" />
                   </div>
                 </div>

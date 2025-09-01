@@ -6,22 +6,25 @@ import { useEffect, useState } from "react";
 
 const ListMejaManagementPage = () => {
   const [listMeja, setListMeja] = useState([]);
+  // const { userId } = useParams();
+  const token = localStorage.getItem("token");
 
   const fetchingDataListMeja = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/list-meja/user/login",
+        `http://localhost:3000/api/list-meja/user/loggedin`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const data = await response.json();
+      console.log(data);
       setListMeja(data);
     } catch (error) {
-      console.error(error);
+      console.log("error", error);
     }
   };
 
@@ -105,43 +108,62 @@ const ListMejaManagementPage = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {listMeja.map((meja) => (
-                    <tr className="hover:bg-gray-50 transition-colors duration-150">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="ml-4">
+                  {listMeja !== null ? (
+                    listMeja.map((meja) => (
+                      <tr
+                        className="hover:bg-gray-50 transition-colors duration-150"
+                        key={`${meja._id}`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            {/* <div className="ml-4"> */}
                             <div className="text-sm font-medium text-gray-900">
                               {meja.noMeja}
                             </div>
+                            {/* </div> */}
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {meja.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {meja.waktuPemesanan}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{meja.note}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a
-                          href="#"
-                          className="text-indigo-600 hover:text-indigo-900 mr-3"
-                        >
-                          Edit
-                        </a>
-                        <a href="#" className="text-red-600 hover:text-red-900">
-                          Delete
-                        </a>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            {meja.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {meja.waktuPemesanan}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {meja.note}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <a
+                            href="#"
+                            className="text-indigo-600 hover:text-indigo-900 mr-3"
+                          >
+                            Edit
+                          </a>
+                          <a
+                            href="#"
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Delete
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="px-6 py-4 text-center text-gray-500"
+                      >
+                        Tidak ada data meja tersedia.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
