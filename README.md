@@ -74,6 +74,12 @@ set your costum token
   ACCESS_TOKEN_SECRET=[your-custom-token-here]
 ```
 
+create folder for storing images
+
+```bash
+  mkdir -p public/uploads
+```
+
 Install dependencies
 
 ```bash
